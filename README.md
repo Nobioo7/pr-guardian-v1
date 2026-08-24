@@ -8,7 +8,7 @@ PR Guardian V1 is a production-ready FastAPI service for GitHub App pull request
 - GitHub App authentication using installation tokens.
 - HMAC SHA-256 webhook verification.
 - Tree-sitter AST summaries for common languages.
-- Semgrep security scanning via `p/security-audit`.
+- Semgrep security scanning via the Semgrep CLI and `p/security-audit`.
 - OpenAI JSON review generation constrained to supplied evidence.
 - GitHub pull request review comments anchored to changed lines.
 - Docker, Docker Compose, GitHub Actions CI, and Railway deployment config.
@@ -21,7 +21,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-The service listens on `http://localhost:8000` and exposes `GET /healthz`.
+The service listens on `http://localhost:8000` and exposes `GET /healthz`. The Docker image installs the Semgrep CLI separately from application dependencies so CI and local tests stay fast and deterministic.
 
 ## GitHub App setup
 
@@ -49,6 +49,8 @@ All configuration uses the `PR_GUARDIAN_` prefix.
 | `MAX_FILES_PER_REVIEW` | Review file cap, default `20`. |
 | `MAX_PATCH_CHARS` | Patch excerpt cap per file, default `12000`. |
 | `POST_REVIEW_COMMENTS` | Set false for dry-run behavior. |
+
+Semgrep is expected on `PATH` at runtime. If the binary is missing, PR Guardian records a non-fatal warning and still runs the OpenAI review over patch and AST evidence.
 
 ## Local development
 

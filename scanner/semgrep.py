@@ -1,4 +1,5 @@
 import json
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -8,6 +9,8 @@ from typing import Any
 def run_semgrep(files: dict[str, str]) -> list[dict[str, Any]]:
     if not files:
         return []
+    if not shutil.which("semgrep"):
+        return [{"path": "", "line": 1, "severity": "WARNING", "message": "semgrep executable is not installed"}]
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         for path, content in files.items():

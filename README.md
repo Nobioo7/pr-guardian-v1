@@ -50,7 +50,7 @@ All configuration uses the `PR_GUARDIAN_` prefix.
 | `MAX_PATCH_CHARS` | Patch excerpt cap per file, default `12000`. |
 | `POST_REVIEW_COMMENTS` | Set false for dry-run behavior. |
 
-Semgrep is expected on `PATH` at runtime. If the binary is missing, PR Guardian records a non-fatal warning and still runs the OpenAI review over patch and AST evidence.
+Semgrep is expected on `PATH` at runtime. If the binary is missing, times out, or emits invalid JSON, PR Guardian records a non-fatal warning and still runs the review over patch and AST evidence. The Docker image installs Semgrep separately with `pipx`; local development can use `pipx install semgrep==1.103.0`.
 
 ## Local development
 
@@ -59,6 +59,19 @@ Semgrep is expected on `PATH` at runtime. If the binary is missing, PR Guardian 
 source .venv/bin/activate
 pytest
 ./scripts/run.sh
+```
+
+
+## Quality gates
+
+CI installs `requirements-dev.txt` and runs:
+
+```bash
+python -m ruff format --check .
+python -m ruff check .
+python -m mypy app github parser review scanner
+python -m pytest
+python -m compileall app github parser review scanner
 ```
 
 ## Railway deployment

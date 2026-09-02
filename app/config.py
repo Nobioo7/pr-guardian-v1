@@ -1,4 +1,5 @@
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,6 +13,8 @@ class Settings(BaseSettings):
     max_files_per_review: int = 20
     max_patch_chars: int = 12000
     post_review_comments: bool = True
+    state_db_path: str = "/tmp/pr-guardian/state.sqlite3"
+    github_max_retries: int = 3
 
     model_config = SettingsConfigDict(env_file=".env", env_prefix="PR_GUARDIAN_", extra="ignore")
 
